@@ -30,6 +30,7 @@
         <button class="tab-btn active" onclick="setMainTab('decay')">DECAY</button>
         <button class="tab-btn" onclick="setMainTab('shield')">SHIELD</button>
         <button class="tab-btn" onclick="setMainTab('logistics')">LOGISTICS</button>
+        <button class="tab-btn" onclick="setMainTab('flowcal')">FLOW CAL</button>
     </div>
 
     <div class="workspace">
@@ -87,8 +88,53 @@
                 <div id="routeContainer"></div>
             </div>
 
+            <!-- FLOW CALENDAR PANEL -->
+            <div id="flowCalPanel" class="panel hidden" style="flex-grow:1;">
+                <div class="header">FLOW CALENDAR</div>
+                <div class="file-upload-box" id="fcLoaderBox">
+                    <label for="fcFile" style="cursor:pointer; color:var(--hobis-cyan); font-weight:bold;">LOAD EVENTS JSON</label>
+                    <input type="file" id="fcFile" accept=".json" style="display:none;" onchange="fcHandleFile(event)">
+                    <div id="fcFileStatus" style="font-size:0.8rem; color:#666; margin-top:4px;">flow_events_web.json</div>
+                </div>
+                <div id="fcStats" style="font-size:0.8rem; color:#555; margin-bottom:10px;"></div>
+                <div id="fcWorkspace" style="display:none; flex-direction:column; gap:10px; flex:1;">
+                    <!-- Sub tabs: SEARCH / CALENDAR -->
+                    <div class="mode-switch" id="fcSubTabs">
+                        <div class="mode-opt active" data-tab="search" onclick="fcSetSubTab('search')">SEARCH</div>
+                        <div class="mode-opt" data-tab="calendar" onclick="fcSetSubTab('calendar')">CALENDAR</div>
+                    </div>
+                    <!-- SEARCH VIEW -->
+                    <div id="fcSearchView">
+                        <div id="fcFilterRows"></div>
+                        <div style="display:flex; gap:5px; margin:8px 0; flex-wrap:wrap;">
+                            <button class="btn-outline" style="border-style:dashed; color:var(--hobis-cyan); border-color:var(--hobis-cyan);" onclick="fcAddFilter()">+ FILTER</button>
+                            <button class="btn-outline" style="color:var(--hobis-green); border-color:var(--hobis-green);" onclick="fcDoSearch()">SEARCH</button>
+                            <button class="btn-outline" onclick="fcResetFilters()">RESET</button>
+                            <select id="fcSortSelect" onchange="fcDoSearch()" style="margin-left:auto; padding:5px; background:var(--input-bg); border:1px solid #3c4c56; color:var(--hobis-green); border-radius:3px; font-family:'Share Tech Mono',monospace; font-size:0.8rem;">
+                                <option value="date-desc">NEWEST</option>
+                                <option value="date-asc">OLDEST</option>
+                                <option value="title-asc">TITLE A-Z</option>
+                                <option value="project-asc">PROJECT</option>
+                            </select>
+                        </div>
+                        <div id="fcResultCount" style="font-size:0.8rem; color:#8fa3b0; margin-bottom:6px;"></div>
+                        <div id="fcEventList" class="fc-event-list"></div>
+                    </div>
+                    <!-- CALENDAR VIEW -->
+                    <div id="fcCalendarView" class="hidden">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <button class="btn-outline" onclick="fcCalNav(-1)">&lt;</button>
+                            <span id="fcCalTitle" style="font-family:'Orbitron',sans-serif; font-size:1rem; color:var(--hobis-cyan); min-width:80px; text-align:center;"></span>
+                            <button class="btn-outline" onclick="fcCalNav(1)">&gt;</button>
+                            <button class="btn-outline" onclick="fcCalToday()" style="margin-left:auto; color:var(--hobis-green); border-color:var(--hobis-green);">TODAY</button>
+                        </div>
+                        <div id="fcCalGrid" class="fc-cal-grid"></div>
+                    </div>
+                </div>
+            </div>
+
             <!-- LOG -->
-            <div class="panel">
+            <div id="logPanel" class="panel">
                 <div class="header">
                     <span>MISSION LOG</span>
                     <div style="display:flex; gap:5px;">
@@ -102,6 +148,19 @@
 
         <!-- RIGHT COLUMN -->
         <div class="col-right">
+            <!-- FLOW CAL DETAIL (RIGHT) -->
+            <div id="flowCalDetailPanel" class="panel hidden" style="flex-grow:1;">
+                <div class="header" style="color:white;">
+                    <span id="fcDetailTitle">EVENT DETAIL</span>
+                    <button class="btn-outline" onclick="fcCloseDetail()" style="color:var(--hobis-alert); border-color:var(--hobis-alert);">&times; CLOSE</button>
+                </div>
+                <div id="fcDetailBody" style="overflow-y:auto; max-height:calc(100vh - 250px);"></div>
+            </div>
+            <div id="fcEmptyDetail" class="panel hidden" style="flex-grow:1;">
+                <div class="header" style="color:white;">EVENT DETAIL</div>
+                <div class="placeholder-box">Select Event to View Intel</div>
+            </div>
+
             <!-- INTEL PANEL -->
             <div id="rightDetailPanel" class="panel hidden" style="flex-grow:1;">
                 <div class="header" style="color:white;">INTELLIGENCE DISPLAY</div>
@@ -153,6 +212,7 @@
 <script src="js/calc-ui.js"></script>
 <script src="js/calculator.js"></script>
 <script src="js/logistics.js"></script>
+<script src="js/flow-calendar.js"></script>
 
 </body>
 </html>
