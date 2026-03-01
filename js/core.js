@@ -49,16 +49,33 @@ function setMainTab(t) {
     currentMainTab = t;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
-    if (t === 'logistics') {
-        document.getElementById('calcPanel').classList.add('hidden');
+
+    // Hide all mode-specific panels first
+    document.getElementById('calcPanel').classList.add('hidden');
+    document.getElementById('logisticsLeftPanel').classList.add('hidden');
+    document.getElementById('rightDetailPanel').classList.add('hidden');
+    document.getElementById('rightReportPanel').classList.add('hidden');
+    document.getElementById('flowCalPanel').classList.add('hidden');
+    document.getElementById('flowCalDetailPanel').classList.add('hidden');
+    document.getElementById('fcEmptyDetail').classList.add('hidden');
+    document.getElementById('logPanel').classList.add('hidden');
+
+    if (t === 'flowcal') {
+        document.getElementById('flowCalPanel').classList.remove('hidden');
+        // Show detail or empty state on right
+        if (typeof fcSelectedId !== 'undefined' && fcSelectedId !== null) {
+            document.getElementById('flowCalDetailPanel').classList.remove('hidden');
+        } else {
+            document.getElementById('fcEmptyDetail').classList.remove('hidden');
+        }
+    } else if (t === 'logistics') {
+        document.getElementById('logPanel').classList.remove('hidden');
         document.getElementById('logisticsLeftPanel').classList.remove('hidden');
         document.getElementById('rightDetailPanel').classList.remove('hidden');
-        document.getElementById('rightReportPanel').classList.add('hidden');
         if (map) setTimeout(() => map.invalidateSize(), 200);
     } else {
+        document.getElementById('logPanel').classList.remove('hidden');
         document.getElementById('calcPanel').classList.remove('hidden');
-        document.getElementById('logisticsLeftPanel').classList.add('hidden');
-        document.getElementById('rightDetailPanel').classList.add('hidden');
         document.getElementById('rightReportPanel').classList.remove('hidden');
 
         document.getElementById('panelTitle').innerText = t === 'decay' ? "DECAY OPS" : "SHIELD OPS";
