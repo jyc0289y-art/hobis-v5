@@ -746,7 +746,7 @@ function fcRenderCalendar() {
 
         const endD = em ? new Date(parseInt(em[1]), parseInt(em[2])-1, parseInt(em[3])) : new Date(startD);
 
-        for (let d = new Date(startD); d <= endD; d.setDate(d.getDate()+1)) {
+        for (let d = new Date(startD); d < endD; d.setDate(d.getDate()+1)) {
 
             if (d.getFullYear() === fcCalYear && d.getMonth() === fcCalMonth) {
 
@@ -892,7 +892,7 @@ function fcShowDayEvents(day) {
 
         const target = new Date(fcCalYear, fcCalMonth, day);
 
-        return target >= startD && target <= endD;
+        return target >= startD && target < endD;
 
     });
 
